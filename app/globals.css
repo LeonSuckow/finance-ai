@@ -14,13 +14,14 @@ body {
 
 @layer base {
   :root {
+    --tw-bg-opacity: 1;
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: transparent; /* Adjusted to be transparent */
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 102 59% 44%; /* Adjusted for #55B02E */
+    --primary: #55b02e; /* Adjusted for #55B02E */
     --primary-foreground: 355.7 100% 97.3%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -42,6 +43,7 @@ body {
   }
 
   .dark {
+    --tw-bg-opacity: 1;
     --background: 20 14.3% 4.1%;
     --foreground: 0 0% 95%;
     --card: transparent; /* Adjusted to be transparent */
