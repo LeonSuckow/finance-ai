@@ -1,53 +1,16 @@
 "use client";
 
-import {
-  CustomBadge,
-  CustomBedgeType,
-} from "@/app/_components/custom/badge/CustomBadge";
+import { CustomBadge } from "@/app/_components/custom/badge/CustomBadge";
 import { Button } from "@/app/_components/ui/button";
-import utils from "@/app/_utils";
 import {
-  Transaction,
-  TransactionCategory,
-  TransactionPaymentMethod,
-  TransactionType,
-} from "@prisma/client";
+  TRANSACTION_CATEGORY_LABELS,
+  TRANSACTION_PAYMENT_METHOD_LABELS,
+  TRANSACTION_TYPE_COLUMN_CONFIG,
+} from "@/app/_constants/transactions";
+import utils from "@/app/_utils";
+import { Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { PencilIcon } from "lucide-react";
-
-const transactionTypeConfig: Record<
-  TransactionType,
-  { text: string; badgeType: CustomBedgeType }
-> = {
-  [TransactionType.DEPOSIT]: { text: "Depósito", badgeType: "success" },
-  [TransactionType.EXPENSE]: { text: "Despesa", badgeType: "danger" },
-  [TransactionType.INVESTMENT]: { text: "Investimento", badgeType: "white" },
-};
-
-export const transactionCategoryLabels: Record<TransactionCategory, string> = {
-  EDUCATION: "Educação",
-  ENTERTAINMENT: "Entretenimento",
-  FOOD: "Alimentação",
-  HEALTH: "Saúde",
-  HOUSING: "Moradia",
-  SALARY: "Salário",
-  TRANSPORTATION: "Transporte",
-  UTILITY: "Utilidades",
-  OTHER: "Outros",
-};
-
-export const transactionMethodPayment: Record<
-  TransactionPaymentMethod,
-  string
-> = {
-  CASH: "Dinheiro",
-  CREDIT_CARD: "Cartão de crédito",
-  DEBIT_CARD: "Cartão de debito",
-  BANK_TRANSFER: "Transferência bancária",
-  BANK_SPLIT: "Parcelamento bancário",
-  PIX: "PIX",
-  OTHER: "Outro",
-};
 
 export const transactionsColumns: ColumnDef<Transaction>[] = [
   {
@@ -58,7 +21,8 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     accessorKey: "type",
     header: "Tipo",
     cell: ({ row: { original: transaction } }) => {
-      const { text, badgeType } = transactionTypeConfig[transaction.type];
+      const { text, badgeType } =
+        TRANSACTION_TYPE_COLUMN_CONFIG[transaction.type];
       return <CustomBadge type={badgeType} text={text} />;
     },
   },
@@ -66,7 +30,7 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     accessorKey: "category",
     header: "Categoria",
     cell: ({ row: { original: transaction } }) => {
-      const label = transactionCategoryLabels[transaction.category];
+      const label = TRANSACTION_CATEGORY_LABELS[transaction.category];
       return label;
     },
   },
@@ -74,7 +38,8 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     accessorKey: "paymentMethod",
     header: "Método de pagamento",
     cell: ({ row: { original: transaction } }) => {
-      const label = transactionMethodPayment[transaction.paymentMethod];
+      const label =
+        TRANSACTION_PAYMENT_METHOD_LABELS[transaction.paymentMethod];
       return label;
     },
   },

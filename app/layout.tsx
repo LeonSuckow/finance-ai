@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import type { Metadata } from "next";
 import { Mulish } from "next/font/google";
+import { Toaster } from "./_components/ui/toaster";
 import "./globals.css";
 
 const mulish = Mulish({
@@ -27,6 +28,7 @@ export default function RootLayout({
       >
         <body className={`${mulish.className} dark antialiased`}>
           {children}
+          <Toaster />
         </body>
       </ClerkProvider>
     </html>
