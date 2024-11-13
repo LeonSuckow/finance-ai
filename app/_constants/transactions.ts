@@ -5,6 +5,13 @@ import {
 } from "@prisma/client";
 import { CustomBedgeType } from "../_components/custom/badge/CustomBadge";
 
+function createOptionsFromLabels<T extends string>(labels: Record<T, string>) {
+  return Object.keys(labels).map((key) => ({
+    value: key as T,
+    label: labels[key as T],
+  }));
+}
+
 export const TRANSACTION_CATEGORY_LABELS: Record<TransactionCategory, string> =
   {
     EDUCATION: "Educação",
@@ -37,20 +44,16 @@ export const TRANSACTION_TYPE_LABELS = {
   [TransactionType.INVESTMENT]: "Investimento",
 };
 
-export const TRANSACTION_TYPE_OPTIONS = [
-  {
-    value: TransactionType.DEPOSIT,
-    label: "Deposito",
-  },
-  {
-    value: TransactionType.EXPENSE,
-    label: "Despesa",
-  },
-  {
-    value: TransactionType.INVESTMENT,
-    label: "Investimento",
-  },
-];
+export const TRANSACTION_CATEGORY_OPTIONS = createOptionsFromLabels(
+  TRANSACTION_CATEGORY_LABELS,
+);
+export const TRANSACTION_PAYMENT_METHOD_OPTIONS = createOptionsFromLabels(
+  TRANSACTION_PAYMENT_METHOD_LABELS,
+);
+
+export const TRANSACTION_TYPE_OPTIONS = createOptionsFromLabels(
+  TRANSACTION_TYPE_LABELS,
+);
 
 export const TRANSACTION_TYPE_COLUMN_CONFIG: Record<
   TransactionType,

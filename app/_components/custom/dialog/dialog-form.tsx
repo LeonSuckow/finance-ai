@@ -1,14 +1,8 @@
 "use client";
-import { TRANSACTION_TYPE_OPTIONS } from "@/app/_constants/transactions";
-import { useToast } from "@/app/_hooks/use-toast";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  TransactionCategory,
-  TransactionPaymentMethod,
-  TransactionType,
-} from "@prisma/client";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useForm, UseFormReturn } from "react-hook-form";
+import { z, ZodSchema } from "zod";
 import { Button } from "../../ui/button";
 import { DatePicker } from "../../ui/date-picker";
 import {
@@ -18,7 +12,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../../ui/dialog";
 import {
   Form,
@@ -37,148 +30,175 @@ import {
   SelectValue,
 } from "../../ui/select";
 import { MoneyInput } from "../form-field/money-input";
-const formSchema = z.object({
-  name: z.string().trim().min(1, {
-    message: "O nome é obrigatório",
-  }),
-  amount: z.string().trim().min(1, {
-    message: "O valor é obrigatório",
-  }),
-  type: z.nativeEnum(TransactionType, {
-    required_error: "O tipo é obrigatório",
-  }),
-  category: z.nativeEnum(TransactionCategory, {
-    required_error: "A categoria é obrigatória",
-  }),
-  paymentMethod: z.nativeEnum(TransactionPaymentMethod, {
-    required_error: "O método de pagamento é obrigatório",
-  }),
-  date: z.date({
-    required_error: "A data é obrigatória",
-  }),
-});
 
-const DialogForm = () => {
-  const { toast } = useToast();
-  const buttonText = "Open dialog";
-  const headerTitle = <DialogTitle>Transação</DialogTitle>;
-  const dialogActions = (
-    <>
-      <DialogClose asChild>
-        <Button type="button" variant="outline">
-          Cancelar
-        </Button>
-      </DialogClose>
-      <Button type="submit">Adicionar</Button>
-    </>
-  );
-  type FormSchema = z.infer<typeof formSchema>;
+// Exemplo de configuração de campo do formulário
+export type FieldDialogConfig = {
+  name: string;
+  label: string;
+  type: "text" | "numeric" | "select" | "date";
+  options?: { label: any; value: string }[];
+  defaultValue: any;
+  enumType?: any;
+};
 
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      amount: "",
-      category: TransactionCategory.OTHER,
-      date: new Date(),
-      name: "",
-      paymentMethod: TransactionPaymentMethod.CASH,
-      type: TransactionType.EXPENSE,
+type DialogProps = {
+  headerTitle: string;
+  fieldsConfig: FieldDialogConfig[];
+  onSubmit: (data: any) => void;
+  dialogIsOpen: boolean;
+  setDialogIsOpen: (open: boolean) => void;
+};
+
+interface FieldProps {
+  field: FieldDialogConfig;
+  form: UseFormReturn<
+    {
+      [k: string]: any;
     },
+    any,
+    undefined
+  >;
+}
+
+// Função para mapear o tipo de campo para o schema Zod
+function getFieldSchema(type: string, enumType?: any) {
+  switch (type) {
+    case "text":
+      return z.string().trim().min(1, "Este campo é obrigatório");
+    case "numeric":
+      return z.number().min(1, "Este campo deve ser um número válido");
+    case "select":
+      if (enumType)
+        return z.nativeEnum(enumType, {
+          required_error: "Seleção obrigatória",
+        });
+      throw new Error("Enum type is required for select fields");
+    case "date":
+      return z.date({ required_error: "Data obrigatória" });
+    default:
+      throw new Error(`Tipo de campo desconhecido: ${type}`);
+  }
+}
+
+function createDynamicSchema(
+  fieldsConfig: {
+    name: string;
+    type: string;
+    defaultValue: any;
+    enumType?: any;
+  }[],
+) {
+  const schemaObject: Record<string, z.ZodTypeAny> = {};
+
+  fieldsConfig.forEach((field) => {
+    schemaObject[field.name] = getFieldSchema(field.type, field.enumType);
   });
 
-  const onSubmit = (data: FormSchema) => {
-    toast({
-      title: "Transação",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  return z.object(schemaObject);
+}
+
+// Renderiza dinamicamente os campos do formulário com base no tipo
+const RenderField = ({ field, form }: FieldProps) => {
+  return (
+    <FormField
+      control={form.control}
+      name={field.name}
+      render={({ field: formField }) => (
+        <FormItem>
+          <FormLabel>{field.label}</FormLabel>
+          <FormControl>
+            <>
+              {field.type === "text" && (
+                <Input placeholder={field.label} {...formField} />
+              )}
+              {field.type === "numeric" && (
+                <MoneyInput
+                  value={formField.value}
+                  placeholder={field.label}
+                  onValueChange={({ floatValue }) =>
+                    formField.onChange(floatValue)
+                  }
+                  onBlur={formField.onBlur}
+                  disabled={formField.disabled}
+                />
+              )}
+              {field.type === "select" && field.options && (
+                <Select
+                  onValueChange={formField.onChange}
+                  defaultValue={formField.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={`Select ${field.label}`} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {field.options.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+              {field.type === "date" && (
+                <DatePicker
+                  value={formField.value}
+                  onChange={formField.onChange}
+                />
+              )}
+            </>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+const DialogForm = ({ ...props }: DialogProps) => {
+  const formSchema = createDynamicSchema(props.fieldsConfig);
+  const defaultValues = Object.fromEntries(
+    props.fieldsConfig.map((field) => [field.name, field.defaultValue]),
+  );
+
+  const form = useForm({
+    resolver: zodResolver(formSchema as ZodSchema),
+    defaultValues,
+  });
+
+  const handleFormSubmit = (data: any) => {
+    props.onSubmit(data); // Chama a função `onSubmit` que foi passada
+    form.reset();
+    props.setDialogIsOpen(false);
   };
+
+  const fields = props.fieldsConfig.map((field) => (
+    <RenderField key={field.name} field={field} form={form} />
+  ));
 
   return (
     <Dialog
+      open={props.dialogIsOpen}
       onOpenChange={(open) => {
-        if (!open) {
-          form.reset();
-        }
+        props.setDialogIsOpen(open);
+        if (!open) form.reset();
       }}
     >
-      <DialogTrigger asChild>
-        <Button>{buttonText}</Button>
-      </DialogTrigger>
       <DialogContent>
         <Form {...form}>
-          <DialogHeader>{headerTitle}</DialogHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nome" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Valor</FormLabel>
-                  <FormControl>
-                    <MoneyInput placeholder="Valor" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Categoria</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {TRANSACTION_TYPE_OPTIONS.map((option) => (
-                        <SelectItem value={option.value} key={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Categoria</FormLabel>
-                  <DatePicker value={field.value} onChange={field.onChange} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter>{dialogActions}</DialogFooter>
+          <DialogHeader>
+            <DialogTitle>{props.headerTitle}</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={form.handleSubmit(handleFormSubmit)}
+            className="space-y-8"
+          >
+            {fields}
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline">Cancelar</Button>
+              </DialogClose>
+              <Button type="submit">Salvar</Button>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
