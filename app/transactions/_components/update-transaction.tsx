@@ -42,7 +42,7 @@ const UpdateTransaction = ({ transaction }: UpdateTransactionProps) => {
       name: "amount",
       label: "Valor",
       type: "numeric",
-      defaultValue: transaction.amount,
+      defaultValue: Number(transaction.amount),
     },
     {
       name: "type",
@@ -78,7 +78,11 @@ const UpdateTransaction = ({ transaction }: UpdateTransactionProps) => {
 
   const handleTransactionSubmit = async (data: UpsertTransactionParams) => {
     try {
-      await upsertTransaction({ ...data, id: transaction.id });
+      await upsertTransaction({
+        ...data,
+        id: transaction.id,
+        amount: Number(data.amount),
+      });
       console.log("Transação adicionada:", data);
     } catch (error) {
       console.error("Erro ao adicionar transação:", error);

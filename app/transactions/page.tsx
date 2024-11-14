@@ -1,3 +1,5 @@
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import Navbar from "../_components/custom/navbar";
 import { DataTable } from "../_components/ui/data-table";
 import { db } from "../_lib/prisma";
@@ -6,7 +8,13 @@ import { transactionsColumns } from "./_columns";
 import AddTransactions from "./_components/add-transaction";
 
 const TransactionsPage = async () => {
-  const transactions = await db.transaction.findMany({});
+  const { userId } = await auth();
+  if (!userId) {
+    redirect("/login");
+  }
+  const transactions = await db.transaction.findMany({
+    where: { userId },
+  });
   return (
     <>
       <Navbar />

@@ -68,7 +68,7 @@ const AddTransactions = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const handleTransactionSubmit = async (data: UpsertTransactionParams) => {
     try {
-      await upsertTransaction({ ...data, id: "" });
+      await upsertTransaction({ ...data });
       console.log("Transação adicionada:", data);
     } catch (error) {
       console.error("Erro ao adicionar transação:", error);
