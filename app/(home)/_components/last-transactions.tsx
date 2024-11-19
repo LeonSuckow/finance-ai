@@ -11,22 +11,24 @@ interface LastTransactionsProps {
   lastTransactions: Transaction[]
 }
 
+const getAmountColor = (transaction: Transaction) => {
+  if (transaction.type === TransactionType.EXPENSE) {
+    return 'text-red-500'
+  }
+  if (transaction.type === TransactionType.DEPOSIT) {
+    return 'text-primary'
+  }
+  return 'text-white'
+}
+
+const getAmountPrefix = (transaction: Transaction) => {
+  if (transaction.type === TransactionType.DEPOSIT) {
+    return '+'
+  }
+  return '-'
+}
+
 const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
-  const getAmountColor = (transaction: Transaction) => {
-    if (transaction.type === TransactionType.EXPENSE) {
-      return 'text-red-500'
-    }
-    if (transaction.type === TransactionType.DEPOSIT) {
-      return 'text-primary'
-    }
-    return 'text-white'
-  }
-  const getAmountPrefix = (transaction: Transaction) => {
-    if (transaction.type === TransactionType.DEPOSIT) {
-      return '+'
-    }
-    return '-'
-  }
   return (
     <ScrollArea className="rounded-md border">
       <CardHeader className="flex-row items-center justify-between">
