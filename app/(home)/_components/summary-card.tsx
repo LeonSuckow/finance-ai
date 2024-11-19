@@ -30,8 +30,10 @@ const SummaryCard = ({ size = 'small', ...props }: SummaryCardProps) => {
         <p className={`font-bold ${amountStyle}`}>
           {utils.format.formatCurrency(props.amount)}
         </p>
-        {props.hasAddTransactionButton && props.userCanAddTransaction && (
-          <AddTransactionButton userCanAddTransaction={true} />
+        {props.hasAddTransactionButton && (
+          <AddTransactionButton
+            userCanAddTransaction={props.userCanAddTransaction}
+          />
         )}
       </CardContent>
     </Card>

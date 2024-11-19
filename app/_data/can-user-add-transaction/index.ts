@@ -1,6 +1,7 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { getCurrentMonthTransactions } from '../get-current-month-transactions'
 
+const MAX_TRANSACTIONS_PER_MONTH = 10
 export const canUserAddTransaction = async () => {
   const { userId } = await auth()
   if (!userId) {
@@ -14,7 +15,7 @@ export const canUserAddTransaction = async () => {
 
   const currentMonthTransaction = await getCurrentMonthTransactions()
 
-  if (currentMonthTransaction >= 10) {
+  if (currentMonthTransaction >= MAX_TRANSACTIONS_PER_MONTH) {
     return false
   }
   return true

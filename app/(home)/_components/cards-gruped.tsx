@@ -16,6 +16,7 @@ interface SummaryCards {
 }
 
 const CardsGruped = ({ ...props }: SummaryCards) => {
+  console.log(props.userCanAddTransaction)
   return (
     <div className="space-y-6">
       <SummaryCard

@@ -22,10 +22,13 @@ const getAmountColor = (transaction: Transaction) => {
 }
 
 const getAmountPrefix = (transaction: Transaction) => {
-  if (transaction.type === TransactionType.DEPOSIT) {
-    return '+'
+  if (
+    transaction.type === TransactionType.DEPOSIT ||
+    transaction.type === TransactionType.INVESTMENT
+  ) {
+    return '+ '
   }
-  return '-'
+  return '- '
 }
 
 const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
