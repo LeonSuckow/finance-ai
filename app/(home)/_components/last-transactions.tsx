@@ -53,11 +53,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
               <div>
                 <p className="text-sm font-bold">{transaction.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {new Date(transaction.date).toLocaleDateString('pt-BR', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
+                  {utils.format.formatDateShort(transaction.date)}
                 </p>
               </div>
             </div>

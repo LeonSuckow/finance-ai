@@ -1,10 +1,16 @@
-import { formatCurrency, formatDate, formatDateTime } from "./formatUtils";
+import {
+  formatCurrency,
+  formatDate,
+  formatDateShort,
+  formatDateTime,
+} from './formatUtils'
 
 const utils = {
   format: {
     formatCurrency,
     formatDate,
     formatDateTime,
+    formatDateShort,
   },
-};
-export default utils;
+}
+export default utils

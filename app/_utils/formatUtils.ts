@@ -12,3 +12,11 @@ export function formatDate(date: string | Date) {
 export function formatDateTime(date: Date) {
   return new Date(date).toLocaleString('pt-BR')
 }
+
+export function formatDateShort(date: Date) {
+  return new Date(date).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  })
+}
