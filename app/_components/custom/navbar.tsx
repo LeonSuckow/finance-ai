@@ -1,20 +1,20 @@
-"use client";
-import { UserButton } from "@clerk/nextjs";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+'use client'
+import { UserButton } from '@clerk/nextjs'
+import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 const menuItems = {
-  Dashboard: "/",
-  Transactions: "/transactions",
-  Assinatura: "/subscription",
-};
+  Dashboard: '/',
+  Transações: '/transactions',
+  Assinatura: '/subscription',
+}
 const Navbar = () => {
-  const pathname = usePathname();
+  const pathname = usePathname()
   return (
     <nav className="flex justify-between border-b border-solid px-8 py-4">
       <div className="flex items-center gap-10">
         <Image
-          src={"/logo.svg"}
+          src={'/logo.svg'}
           alt="Logo finance.ai"
           width={173}
           height={39}
@@ -25,8 +25,8 @@ const Navbar = () => {
             key={item}
             className={
               pathname === menuItems[item as keyof typeof menuItems]
-                ? "font-bold text-primary"
-                : "text-muted-foreground"
+                ? 'font-bold text-primary'
+                : 'text-muted-foreground'
             }
           >
             {item}
@@ -35,7 +35,7 @@ const Navbar = () => {
       </div>
       <UserButton showName />
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
