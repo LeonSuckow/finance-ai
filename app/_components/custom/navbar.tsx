@@ -3,8 +3,10 @@ import { UserButton } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+
+const actualMonth = new Date().getMonth() + 1
 const menuItems = {
-  Dashboard: '/',
+  Dashboard: `/?month=${actualMonth}`,
   Transações: '/transactions',
   Assinatura: '/subscription',
 }

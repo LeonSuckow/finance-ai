@@ -11,12 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/app/_components/ui/dialog'
-import { BotIcon, Loader2Icon } from 'lucide-react'
-import { generateAiReport } from '../_actions/generate-ai-report'
-import { useState } from 'react'
 import { ScrollArea } from '@/app/_components/ui/scroll-area'
-import Markdown from 'react-markdown'
+import { BotIcon, Loader2Icon } from 'lucide-react'
 import Link from 'next/link'
+import { useState } from 'react'
+import Markdown from 'react-markdown'
+import { generateAiReport } from '../_actions/generate-ai-report'
 
 interface AiReportButtonProps {
   hasPremiumPlan: boolean
@@ -30,7 +30,6 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
     try {
       setReportIsLoading(true)
       const aiReport = await generateAiReport({ month })
-      console.log({ aiReport })
       setReport(aiReport)
     } catch (error) {
       console.error(error)
@@ -62,7 +61,7 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
                 sobre suas finanças.
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="prose max-h-[450px] text-white prose-h3:text-white prose-h4:text-white prose-strong:text-white">
+            <ScrollArea className="prose max-h-[450px] text-white prose-strong:text-lg prose-h2:text-white prose-h3:text-white prose-h4:text-white prose-strong:text-white">
               <Markdown>{report}</Markdown>
             </ScrollArea>
             <DialogFooter>

@@ -20,7 +20,7 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
     throw new Error('You need a premium plan to generate AI reports')
   }
   if (!process.env.OPENAI_API_KEY) {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 2000))
     return DUMMY_REPORT
   }
   const openAi = new OpenAI({
@@ -29,6 +29,7 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
   // pegar as transações do mês recebido
   const transactions = await db.transaction.findMany({
     where: {
+      userId,
       date: {
         gte: new Date(`2024-${month}-01`),
         lt: new Date(`2024-${month}-31`),
