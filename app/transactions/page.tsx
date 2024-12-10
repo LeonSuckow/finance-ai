@@ -1,18 +1,14 @@
-import { auth } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
 import Navbar from '../_components/custom/navbar'
 import { DataTable } from '../_components/ui/data-table'
 import { db } from '../_lib/prisma'
 
+import { getUserLogged } from '../_actions/auth'
 import { ScrollArea } from '../_components/ui/scroll-area'
 import { transactionsColumns } from './_columns'
 import AddTransactions from './_components/add-transaction'
 
 const TransactionsPage = async () => {
-  const { userId } = await auth()
-  if (!userId) {
-    redirect('/login')
-  }
+  const userId = getUserLogged()
   const transactions = await db.transaction.findMany({
     where: { userId },
   })

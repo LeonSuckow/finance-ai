@@ -1,13 +1,14 @@
+import { getUserLogged } from '@/app/_actions/auth'
+import {
+  DashboartData,
+  TotalExpensePerCategory,
+  TransactionPercentagePerType,
+} from '@/app/_interface/dashboard'
 import { db } from '@/app/_lib/prisma'
-import { auth } from '@clerk/nextjs/server'
 import { TransactionType } from '@prisma/client'
-import { TotalExpensePerCategory, TransactionPercentagePerType } from './types'
 
-export const getDashboard = async (month: string) => {
-  const { userId } = await auth()
-  if (!userId) {
-    throw new Error('Unauthorized')
-  }
+export const getDashboard = async (month: string): Promise<DashboartData> => {
+  const userId = getUserLogged()
   const where = {
     userId,
     date: {

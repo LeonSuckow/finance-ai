@@ -1,15 +1,11 @@
-import { SignInButton } from "@clerk/nextjs";
-import { auth } from "@clerk/nextjs/server";
-import { LogInIcon } from "lucide-react";
-import Image from "next/image";
-import { redirect } from "next/navigation";
-import { Button } from "../_components/ui/button";
+import { SignInButton } from '@clerk/nextjs'
+import { LogInIcon } from 'lucide-react'
+import Image from 'next/image'
+import { redirectUserLooged } from '../_actions/auth'
+import { Button } from '../_components/ui/button'
 
 const LoginPage = async () => {
-  const { userId } = await auth();
-  if (userId) {
-    redirect("/");
-  }
+  redirectUserLooged()
 
   return (
     <div className="grid h-full grid-cols-2">
@@ -43,7 +39,7 @@ const LoginPage = async () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

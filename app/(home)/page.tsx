@@ -1,9 +1,5 @@
-import { auth, clerkClient } from '@clerk/nextjs/server'
-import { isMatch } from 'date-fns'
-import { redirect } from 'next/navigation'
 import Navbar from '../_components/custom/navbar'
-import { canUserAddTransaction } from '../_data/can-user-add-transaction'
-import { getDashboard } from '../_data/get-dashboard'
+import { getHomeData } from './_actions/get-home-data'
 import AiReportButton from './_components/ai-report-button'
 import CardsGruped from './_components/cards-gruped'
 import ExpensesPerCategory from './_components/expenses-per-category'
@@ -17,22 +13,11 @@ interface HomeProps {
   }
 }
 
-const Home = async ({ searchParams: { month } }: HomeProps) => {
-  const { userId } = await auth()
-  const monthIsInvalid = !month || !isMatch(month, 'MM')
-
-  if (!userId) {
-    redirect('/login')
-  }
-
-  if (monthIsInvalid) {
-    const actualMonth = new Date().getMonth() + 1
-    redirect(`/?month=${actualMonth}`)
-  }
-
-  const dashboard = await getDashboard(month)
-  const userCanAddTransaction = await canUserAddTransaction()
-  const user = await clerkClient().users.getUser(userId)
+const Home = async ({ searchParams }: HomeProps) => {
+  const { dashboard, month, clerkUser, userCanAddTransaction } =
+    await getHomeData({
+      searchParams,
+    })
 
   return (
     <>
@@ -44,7 +29,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
             <AiReportButton
               month={month}
               hasPremiumPlan={
-                user.publicMetadata.subscriptionPlan === 'premium'
+                clerkUser.publicMetadata.subscriptionPlan === 'premium'
               }
             />
             <MonthSelect />

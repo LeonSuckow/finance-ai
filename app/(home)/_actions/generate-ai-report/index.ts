@@ -1,7 +1,8 @@
 'use server'
 
+import { getUserLogged } from '@/app/_actions/auth'
 import { db } from '@/app/_lib/prisma'
-import { auth, clerkClient } from '@clerk/nextjs/server'
+import { clerkClient } from '@clerk/nextjs/server'
 import OpenAI from 'openai'
 import { GenerateAiReportSchema, generateAiReportSchema } from './schema'
 
@@ -10,10 +11,8 @@ const DUMMY_REPORT =
 
 export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
   generateAiReportSchema.parse({ month })
-  const { userId } = await auth()
-  if (!userId) {
-    throw new Error('Unauthorized')
-  }
+  const userId = getUserLogged()
+
   const user = await clerkClient().users.getUser(userId)
   const hasPremiumPlan = user.publicMetadata.subscriptionPlan === 'premium'
   if (!hasPremiumPlan) {

@@ -1,6 +1,6 @@
-import { auth, clerkClient } from '@clerk/nextjs/server'
+import { clerkClient } from '@clerk/nextjs/server'
 import { CheckIcon, XIcon } from 'lucide-react'
-import { redirect } from 'next/navigation'
+import { getUserLogged } from '../_actions/auth'
 import Navbar from '../_components/custom/navbar'
 import { Badge } from '../_components/ui/badge'
 import { Card, CardContent, CardHeader } from '../_components/ui/card'
@@ -8,13 +8,10 @@ import { getCurrentMonthTransactions } from '../_data/get-current-month-transact
 import AcquirePlanButton from './_components/acquire-plan-button'
 
 const SubscriptionPage = async () => {
-  const { userId } = await auth()
-  if (!userId) {
-    redirect('/login')
-  }
-  const user = await clerkClient().users.getUser(userId)
+  const userId = getUserLogged()
+  const clerkUser = await clerkClient().users.getUser(userId)
   const currentMonthTransactions = await getCurrentMonthTransactions()
-  const hasPremiumPlan = user.publicMetadata.subscriptionPlan == 'premium'
+  const hasPremiumPlan = clerkUser.publicMetadata.subscriptionPlan == 'premium'
   return (
     <>
       <Navbar />

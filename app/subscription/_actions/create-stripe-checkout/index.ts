@@ -1,13 +1,10 @@
 'use server'
 
-import { auth } from '@clerk/nextjs/server'
+import { getUserLogged } from '@/app/_actions/auth'
 import Stripe from 'stripe'
 
 export const createStripeCheckout = async () => {
-  const { userId } = await auth()
-  if (!userId) {
-    throw new Error('Unauthorized')
-  }
+  const userId = getUserLogged()
   if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error('Stripe secret key not found')
   }
