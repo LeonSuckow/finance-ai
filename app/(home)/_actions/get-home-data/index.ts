@@ -1,7 +1,7 @@
 import { getUserLogged } from '@/app/_actions/auth'
 import { canUserAddTransaction } from '@/app/_data/can-user-add-transaction'
 import { getDashboard } from '@/app/_data/get-dashboard'
-import { clerkClient } from '@clerk/nextjs/server'
+import { User } from '@clerk/nextjs/server'
 import { isMatch } from 'date-fns'
 import { redirect } from 'next/navigation'
 
@@ -14,24 +14,23 @@ interface HomeProps {
 interface HomeData {
   dashboard: Awaited<ReturnType<typeof getDashboard>>
   userCanAddTransaction: Awaited<ReturnType<typeof canUserAddTransaction>>
-  clerkUser: Awaited<ReturnType<typeof clerkClient.users.getUser>>
+  clerkUser: User
   month: string
 }
 
 export async function getHomeData({
   searchParams,
 }: HomeProps): Promise<HomeData> {
-  const userId = getUserLogged()
+  const clerkUser = await getUserLogged()
 
   if (!searchParams.month || !isMatch(searchParams.month, 'MM')) {
     const actualMonth = new Date().getMonth() + 1
     redirect(`/?month=${actualMonth}`)
   }
 
-  const [dashboard, userCanAddTransaction, clerkUser] = await Promise.all([
+  const [dashboard, userCanAddTransaction] = await Promise.all([
     getDashboard(searchParams.month),
     canUserAddTransaction(),
-    clerkClient.users.getUser(userId),
   ])
 
   return {

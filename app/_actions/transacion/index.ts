@@ -23,14 +23,21 @@ export interface UpsertTransactionParams {
 export const upsertTransaction = async (params: UpsertTransactionParams) => {
   upsertTransactionSchema.parse(params)
   console.log(params)
-  const userId = getUserLogged()
+  const user = await getUserLogged()
 
   await db.transaction.upsert({
-    update: { ...params, userId },
-    create: { ...params, userId },
+    update: { ...params, userId: user.id },
+    create: { ...params, userId: user.id },
     where: {
       id: params.id ?? '',
     },
+  })
+  revalidatePath('/transactions')
+}
+
+export const deleteTransaction = async (id: string) => {
+  await db.transaction.delete({
+    where: { id },
   })
   revalidatePath('/transactions')
 }

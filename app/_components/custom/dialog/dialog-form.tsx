@@ -165,8 +165,8 @@ const DialogForm = ({ ...props }: DialogProps) => {
     defaultValues,
   })
 
-  const handleFormSubmit = (data: any) => {
-    props.onSubmit(data) // Chama a função `onSubmit` que foi passada
+  const handleFormSubmit = async (data: any) => {
+    await props.onSubmit(data) // Chama a função `onSubmit` que foi passada
     form.reset()
     props.setDialogIsOpen(false)
   }

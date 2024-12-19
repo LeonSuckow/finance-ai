@@ -1,20 +1,15 @@
-import { clerkClient } from '@clerk/nextjs/server'
-import { CheckIcon, XIcon } from 'lucide-react'
-import { getUserLogged } from '../_actions/auth'
-import Navbar from '../_components/custom/navbar'
-import { Badge } from '../_components/ui/badge'
-import { Card, CardContent, CardHeader } from '../_components/ui/card'
-import { getCurrentMonthTransactions } from '../_data/get-current-month-transactions'
+import { getUserLogged } from '@/app/_actions/auth'
+import { Card, CardContent, CardHeader } from '@/app/_components/ui/card'
+import { getCurrentMonthTransactions } from '@/app/_data/get-current-month-transactions'
+import { Badge, CheckIcon, XIcon } from 'lucide-react'
 import AcquirePlanButton from './_components/acquire-plan-button'
 
 const SubscriptionPage = async () => {
-  const userId = getUserLogged()
-  const clerkUser = await clerkClient().users.getUser(userId)
+  const user = await getUserLogged()
   const currentMonthTransactions = await getCurrentMonthTransactions()
-  const hasPremiumPlan = clerkUser.publicMetadata.subscriptionPlan == 'premium'
+  const hasPremiumPlan = user?.publicMetadata.subscriptionPlan == 'premium'
   return (
     <>
-      <Navbar />
       <div className="space-y-6 p-6">
         <h1 className="text-2xl font-bold">Assinatura</h1>
 

@@ -4,11 +4,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-const actualMonth = new Date().getMonth() + 1
 const menuItems = {
-  Dashboard: `/?month=${actualMonth}`,
+  Dashboard: `/`,
   Transações: '/transactions',
   Assinatura: '/subscription',
+  Categorias: '/category',
 }
 const Navbar = () => {
   const pathname = usePathname()

@@ -1,13 +1,13 @@
-import { auth } from '@clerk/nextjs/server'
+import { auth, currentUser, User } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
-export function getUserLogged(): string {
-  const { userId } = auth()
+export async function getUserLogged(): Promise<User> {
+  const user = await currentUser()
 
-  if (!userId) {
+  if (!user?.id) {
     redirect('/login')
   }
-  return userId
+  return user
 }
 
 export function redirectUserLooged(to = '/') {

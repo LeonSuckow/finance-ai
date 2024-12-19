@@ -1,80 +1,80 @@
-"use client";
+'use client'
 
 import {
   upsertTransaction,
   UpsertTransactionParams,
-} from "@/app/_actions/transacion";
+} from '@/app/_actions/transacion'
 import DialogForm, {
   FieldDialogConfig,
-} from "@/app/_components/custom/dialog/dialog-form";
-import { Button } from "@/app/_components/ui/button";
+} from '@/app/_components/custom/dialog/dialog-form'
+import { Button } from '@/app/_components/ui/button'
 import {
   TRANSACTION_CATEGORY_OPTIONS,
   TRANSACTION_PAYMENT_METHOD_OPTIONS,
   TRANSACTION_TYPE_OPTIONS,
-} from "@/app/_constants/transactions";
+} from '@/app/_constants/transaction'
 import {
   Transaction,
   TransactionCategory,
   TransactionPaymentMethod,
   TransactionType,
-} from "@prisma/client";
-import { PencilIcon } from "lucide-react";
-import { useState } from "react";
+} from '@prisma/client'
+import { PencilIcon } from 'lucide-react'
+import { useState } from 'react'
 
 interface UpdateTransactionProps {
-  transaction: Transaction;
+  transaction: Transaction
 }
 
 const UpdateTransaction = ({ transaction }: UpdateTransactionProps) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  console.log(transaction);
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  console.log(transaction)
   // console.log(props.transactionId);
   // getTransactionById(props.transactionId);
   const fieldsConfig: FieldDialogConfig[] = [
     {
-      name: "name",
-      label: "Nome",
-      type: "text",
+      name: 'name',
+      label: 'Nome',
+      type: 'text',
       defaultValue: transaction.name,
     },
     {
-      name: "amount",
-      label: "Valor",
-      type: "numeric",
+      name: 'amount',
+      label: 'Valor',
+      type: 'numeric',
       defaultValue: Number(transaction.amount),
     },
     {
-      name: "type",
-      label: "Tipo de Transação",
-      type: "select",
+      name: 'type',
+      label: 'Tipo de Transação',
+      type: 'select',
       options: TRANSACTION_TYPE_OPTIONS,
       enumType: TransactionType,
       defaultValue: transaction.type,
     },
     {
-      name: "category",
-      label: "Categoria",
-      type: "select",
+      name: 'category',
+      label: 'Categoria',
+      type: 'select',
       options: TRANSACTION_CATEGORY_OPTIONS,
       enumType: TransactionCategory,
       defaultValue: transaction.category,
     },
     {
-      name: "paymentMethod",
-      label: "Método de Pagamento",
-      type: "select",
+      name: 'paymentMethod',
+      label: 'Método de Pagamento',
+      type: 'select',
       options: TRANSACTION_PAYMENT_METHOD_OPTIONS,
       enumType: TransactionPaymentMethod,
       defaultValue: transaction.paymentMethod,
     },
     {
-      name: "date",
-      label: "Data",
-      type: "date",
+      name: 'date',
+      label: 'Data',
+      type: 'date',
       defaultValue: transaction.date,
     },
-  ];
+  ]
 
   const handleTransactionSubmit = async (data: UpsertTransactionParams) => {
     try {
@@ -82,12 +82,12 @@ const UpdateTransaction = ({ transaction }: UpdateTransactionProps) => {
         ...data,
         id: transaction.id,
         amount: Number(data.amount),
-      });
-      console.log("Transação adicionada:", data);
+      })
+      console.log('Transação adicionada:', data)
     } catch (error) {
-      console.error("Erro ao adicionar transação:", error);
+      console.error('Erro ao adicionar transação:', error)
     }
-  };
+  }
   return (
     <>
       <Button
@@ -107,7 +107,7 @@ const UpdateTransaction = ({ transaction }: UpdateTransactionProps) => {
         setDialogIsOpen={setIsDialogOpen}
       />
     </>
-  );
-};
+  )
+}
 
-export default UpdateTransaction;
+export default UpdateTransaction

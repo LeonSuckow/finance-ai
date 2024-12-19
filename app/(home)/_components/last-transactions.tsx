@@ -1,7 +1,7 @@
 import { Button } from '@/app/_components/ui/button'
 import { CardContent, CardHeader, CardTitle } from '@/app/_components/ui/card'
 import { ScrollArea } from '@/app/_components/ui/scroll-area'
-import { TRANSACTION_PAYMENT_METHOD_ICONS } from '@/app/_constants/transactions'
+import { TRANSACTION_PAYMENT_METHOD_ICONS } from '@/app/_constants/transaction'
 import utils from '@/app/_utils'
 import { Transaction, TransactionType } from '@prisma/client'
 import Image from 'next/image'

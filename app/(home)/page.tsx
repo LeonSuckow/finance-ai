@@ -1,4 +1,3 @@
-import Navbar from '../_components/custom/navbar'
 import { getHomeData } from './_actions/get-home-data'
 import AiReportButton from './_components/ai-report-button'
 import CardsGruped from './_components/cards-gruped'
@@ -21,7 +20,6 @@ const Home = async ({ searchParams }: HomeProps) => {
 
   return (
     <>
-      <Navbar />
       <div className="flex h-full flex-col space-y-6 overflow-hidden p-6">
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold">Dashboard</h1>

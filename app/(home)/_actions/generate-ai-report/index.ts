@@ -2,7 +2,6 @@
 
 import { getUserLogged } from '@/app/_actions/auth'
 import { db } from '@/app/_lib/prisma'
-import { clerkClient } from '@clerk/nextjs/server'
 import OpenAI from 'openai'
 import { GenerateAiReportSchema, generateAiReportSchema } from './schema'
 
@@ -11,10 +10,9 @@ const DUMMY_REPORT =
 
 export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
   generateAiReportSchema.parse({ month })
-  const userId = getUserLogged()
+  const user = await getUserLogged()
 
-  const user = await clerkClient().users.getUser(userId)
-  const hasPremiumPlan = user.publicMetadata.subscriptionPlan === 'premium'
+  const hasPremiumPlan = user?.publicMetadata.subscriptionPlan === 'premium'
   if (!hasPremiumPlan) {
     throw new Error('You need a premium plan to generate AI reports')
   }
@@ -28,7 +26,7 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
   // pegar as transações do mês recebido
   const transactions = await db.transaction.findMany({
     where: {
-      userId,
+      userId: user.id,
       date: {
         gte: new Date(`2024-${month}-01`),
         lt: new Date(`2024-${month}-31`),

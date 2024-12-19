@@ -19,6 +19,7 @@ export const POST = async (request: Request) => {
     signature,
     process.env.STRIPE_WEBHOOK_SECRET,
   )
+  const client = clerkClient()
 
   switch (event.type) {
     case 'invoice.paid': {
@@ -28,7 +29,7 @@ export const POST = async (request: Request) => {
       if (!clerkUserId) {
         return NextResponse.error()
       }
-      await clerkClient().users.updateUser(clerkUserId, {
+      client.users.updateUser(clerkUserId, {
         privateMetadata: {
           stripeCustomerId: customer,
           stripeSubscriptionId: subscription,
@@ -48,7 +49,7 @@ export const POST = async (request: Request) => {
       if (!clerkUserId) {
         return NextResponse.error()
       }
-      await clerkClient().users.updateUser(clerkUserId, {
+      client.users.updateUser(clerkUserId, {
         privateMetadata: {
           stripeCustomerId: null,
           stripeSubscriptionId: null,

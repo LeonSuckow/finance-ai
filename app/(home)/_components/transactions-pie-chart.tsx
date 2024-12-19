@@ -10,7 +10,7 @@ import {
   ChartTooltipContent,
 } from '@/app/_components/ui/chart'
 import { ScrollArea } from '@/app/_components/ui/scroll-area'
-import { TransactionPercentagePerType } from '@/app/_data/get-dashboard/types'
+import { TransactionPercentagePerType } from '@/app/_interface/dashboard'
 import { TransactionType } from '@prisma/client'
 import { PiggyBankIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 import PercentageItem from './percentage-item'
